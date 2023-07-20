@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build_and_deploy_first_app:
+  build_and_deploy_app1:
     docker:
       - image: docker:20.10.8
     working_directory: /app1
@@ -15,13 +15,13 @@ jobs:
             docker build -t pk051098/my-http-server .
             echo "Samia@1998" | docker login -u "pk051098" --password-stdin
             docker push pk051098/my-http-server
-      - deploy_first_app:
+      - deploy_app1:
           requires:
-            - build_and_deploy_second_app
+            - build_and_deploy_app2
     environment:
       DOCKER_USERNAME: pk051098
 
-  build_and_deploy_second_app:
+  build_and_deploy_app2:
     docker:
       - image: docker:20.10.8
     working_directory: /app2
@@ -35,7 +35,7 @@ jobs:
             docker build -t pk051098/my-message-reverser .
             echo "$Samia@1998" | docker login -u "pk051098" --password-stdin
             docker push pk051098/my-message-reverser
-      - deploy_second_app
+      - deploy_app2
     environment:
       DOCKER_USERNAME: pk051098
 
@@ -43,8 +43,8 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build_and_deploy_first_app
-      - build_and_deploy_second_app:
+      - build_and_deploy_app1
+      - build_and_deploy_app2:
           requires:
-            - build_and_deploy_first_app
+            - build_and_deploy_app1
 
